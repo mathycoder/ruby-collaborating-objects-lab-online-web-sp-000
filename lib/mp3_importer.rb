@@ -1,29 +1,28 @@
 require 'pry'
 
-class MP3Importer 
-  attr_accessor :path 
+class MP3Importer
+  attr_accessor :path  
   
-  def initialize(filepath)
-    @path = filepath
+  def initialize(file_path)
+    @path = file_path
   end 
   
-  def files 
-    
-    search_string = @path + "/**/*.mp3" 
-    files_array = Dir[search_string]
-    spliced_files = []
-    files_array.each do |file|
-      file_array = file.split("./spec/fixtures/mp3s/")
-      spliced_files << file_array[1]
+  def files
+    file_path = @path + "/*mp3"
+    files = Dir[file_path]
+    files.collect do |file| 
+      file.delete_prefix("./spec/fixtures/mp3s/")
     end 
-  spliced_files 
   end 
   
   def import 
     file_names = self.files 
-    file_names.each do |file|
-      Song.new_by_filename(file)
+    file_names.each do |file_name|
+      Song.new_by_filename(file_name)
     end 
   end 
   
 end 
+
+test_music_path = "./spec/fixtures/mp3s"
+MP3Importer.new(test_music_path).files
